@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Bonds - who is the most violent?</title>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load('visualization', '1', {
+      packages: ['corechart', 'bar']
+    });
+    google.setOnLoadCallback(getData);
+
+
+    function getData() {
+      //by crafully reading and following the documentation at https://developers.google.com/chart/interactive/docs/querylanguage#group-by
+      // we can understand that in order to ask our query to the stylesheet we need to insert the key of the google spreadsheet (FOUND inside its URL),
+      //and instead of specifying the range we want to see in the graph, we set the query in the data source by adding to the URL
+      // /gviz/tq?tq=YOUR_QUERY_STRING to get your final query string
+      // I used the encoder to select B, count(B) group by B in order to get my data.
+      var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1oRcF_ac5NOFTjxrzKgLYlrMd-j5NjGU04zS5MfbPh8I/gviz/tq?tq=select%20B%2C%20count(B)%20group%20by%20B');
+      // Send the query with a callback function, to be executed when the data is reeady
+      // drawBasic will get passed the response object with the data in it
+      query.send(drawBasic);
+    }
+
+
+    function drawBasic(response) {
+      // this functions takes the data from the responses on the spreadsheet.
+      // From here on the process to modify the graph is the same as the chart with already embedded data.
+      var data = response.getDataTable();
+
+      var options = { title: 'How are you willing to eat in 2020? ',
+                      subtitle: 'from the  22nd till 29th of December 2019',
+                      width: 600,
+                      height: 300,
+                      colors: ['#6d36f7', '#8a5ef7', '#9188f7'],
+                      legend: { position: "none" },
+                    };
+
+      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+  </script>
+</head>
+
+<body>
+  <div id="chart_div" ></div>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe2YR4MxT8jz94w7aVYpqpuR-ROcW5TCAz1Kca9F_1Fy_jtvQ/viewform?embedded=true" width="640" height="502" frameborder="0" marginheight="0" marginwidth="0">Caricamento…</iframe>
+</body>
+
+</html>
